@@ -1,6 +1,7 @@
 
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./routes/auth.routes");
 const productRoutes = require("./routes/product.routes");
@@ -18,6 +19,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Apply rate limiting to all /api routes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 150, // limit each IP to 150 requests per windowMs
+  message: { message: "Too many requests from this IP, please try again after 15 minutes." },
+  standardHeaders: true, 
+  legacyHeaders: false,
+});
+app.use("/api", apiLimiter);
+
 app.use("/api/auth", authRoutes);
 
 app.use("/api/products", productRoutes);
@@ -25,7 +36,5 @@ app.use("/api/admin/orders", adminOrderRoutes);
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
-
-app.delete("/api/admin/test", (req, res) => res.send("WORKS"));
 
 module.exports = app;
