@@ -6,6 +6,7 @@ const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -64,14 +65,30 @@ const AdminLayout = ({ children }) => {
             <FiMenu size={24} />
           </button>
           
-          <div className="ml-auto flex items-center gap-3">
-            <div className="hidden sm:block text-right">
-              <p className="text-sm font-semibold text-slate-900">Admin User</p>
-              <p className="text-xs text-slate-500">administrator</p>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 border border-slate-300">
-              <FiUsers size={18} />
-            </div>
+          <div className="ml-auto relative">
+            <button 
+              onClick={() => setProfileOpen(!profileOpen)}
+              onBlur={() => setTimeout(() => setProfileOpen(false), 200)}
+              className="flex items-center gap-3 focus:outline-none"
+            >
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-semibold text-slate-900 group-hover:text-primary transition-colors">Admin User</p>
+                <p className="text-xs text-slate-500">administrator</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 border border-slate-300 hover:border-primary transition-colors">
+                <FiUsers size={18} />
+              </div>
+            </button>
+            {profileOpen && (
+              <div className="absolute right-0 mt-3 w-48 bg-white border border-slate-100 rounded-xl shadow-lg py-2 z-50 animate-fade-in origin-top-right">
+                <div className="px-4 py-3 border-b border-slate-100 mb-2 sm:hidden">
+                  <p className="text-sm font-bold text-slate-900">Admin User</p>
+                </div>
+                <button onClick={() => { setProfileOpen(false); navigate('/logout'); }} className="flex items-center w-full text-left gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                  <FiLogOut size={16} /> Logout
+                </button>
+              </div>
+            )}
           </div>
         </header>
         

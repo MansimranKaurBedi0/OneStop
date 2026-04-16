@@ -51,16 +51,22 @@ const orderSchema = new mongoose.Schema(
   min:0
  },
 
- coinsEarned:{
-  type:Number,
-  default:0,
-  min:0,
-  statusHistory:[
- { status:String, date:Date }
-]
- },
+  coinsEarned:{
+   type:Number,
+   default:0,
+   min:0
+  },
 
- finalAmount:{
+  statusHistory:[
+   { status:String, date:Date }
+  ],
+
+  isDeleted: {
+   type: Boolean,
+   default: false
+  },
+
+  finalAmount:{
   type:Number,
   required:true,
   min:0

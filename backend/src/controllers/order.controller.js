@@ -150,13 +150,13 @@ exports.getAllOrders = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const [orders, total] = await Promise.all([
-      Order.find()
+      Order.find({ isDeleted: { $ne: true } })
         .populate("user", "name phone")
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
 
-      Order.countDocuments(),
+      Order.countDocuments({ isDeleted: { $ne: true } }),
     ]);
 
     res.json({
@@ -230,3 +230,26 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// ================= ADMIN: SOFT DELETE ORDER =================
+exports.softDeleteOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findById(id);
+
+    if (!order)
+      return res.status(404).json({ message: "Order not found" });
+
+    if (order.status !== "DELIVERED")
+      return res.status(400).json({ message: "Only delivered orders can be deleted" });
+
+    order.isDeleted = true;
+    await order.save();
+
+    res.json({ message: "Order soft deleted successfully" });
+  } catch (err) {
+    console.log("DELETE ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+

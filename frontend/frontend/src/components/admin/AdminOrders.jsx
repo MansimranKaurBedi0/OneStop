@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { FiChevronRight, FiUser, FiPhone } from "react-icons/fi";
+import { FiChevronRight, FiUser, FiPhone, FiTrash2 } from "react-icons/fi";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const token = localStorage.getItem("token");
 
   const nextStatusFlow = { PLACED: "CONFIRMED", CONFIRMED: "OUT_FOR_DELIVERY", OUT_FOR_DELIVERY: "DELIVERED" };
@@ -18,10 +20,12 @@ export default function AdminOrders() {
     DELIVERED: "bg-green-100 text-green-700 border-green-200",
   };
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (pageNum = page) => {
     try {
-      const res = await api.get("/admin/orders", { headers: { Authorization: `Bearer ${token}` } });
-      setOrders(res.data.data ? res.data.data.reverse() : []);
+      setLoading(true);
+      const res = await api.get(`/admin/orders?page=${pageNum}&limit=8`, { headers: { Authorization: `Bearer ${token}` } });
+      setOrders(res.data.data ? res.data.data : []);
+      setTotalPages(res.data.pagination?.totalPages || 1);
     } catch (err) {
       toast.error("Failed to load orders");
     } finally {
@@ -30,10 +34,8 @@ export default function AdminOrders() {
   };
 
   useEffect(() => {
-    fetchOrders();
-    const interval = setInterval(fetchOrders, 10000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchOrders(page);
+  }, [page]);
 
   const updateStatus = async (order) => {
     const nextStatus = nextStatusFlow[order.status];
@@ -47,11 +49,24 @@ export default function AdminOrders() {
     }
   };
 
+  const deleteOrder = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this completed order?")) return;
+    try {
+      await api.delete(`/admin/orders/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success("Order deleted");
+      if (orders.length === 1 && page > 1) setPage(page - 1);
+      else fetchOrders();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete order");
+    }
+  };
+
   if (loading) return <div className="text-center py-12 text-slate-400 font-medium">Loading orders stream...</div>;
   if (!orders.length) return <div className="text-center py-12 text-slate-400 font-medium bg-white rounded-xl border border-slate-200 border-dashed">No incoming orders.</div>;
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div className="flex flex-col h-full">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 flex-1">
       {orders.map((order) => (
         <div key={order._id} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col justify-between">
           <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -105,8 +120,17 @@ export default function AdminOrders() {
                     <FiChevronRight size={14} />
                   </button>
                 ) : (
-                  <div className="w-full bg-green-50 border border-green-100 text-green-700 font-bold py-2.5 px-3 rounded-xl text-xs text-center uppercase tracking-wide">
-                    Fulfilled
+                  <div className="flex gap-2">
+                    <div className="flex-1 bg-green-50 border border-green-100 text-green-700 font-bold py-2.5 px-3 rounded-xl text-xs text-center uppercase tracking-wide">
+                      Fulfilled
+                    </div>
+                    <button 
+                      onClick={() => deleteOrder(order._id)}
+                      className="bg-white border border-slate-200 text-red-500 hover:bg-red-50 hover:border-red-200 py-2.5 px-3 rounded-xl transition-all active:scale-95 shadow-sm flex items-center justify-center"
+                      title="Archive / Remove Order"
+                    >
+                      <FiTrash2 size={16} />
+                    </button>
                   </div>
                 )}
               </div>
@@ -121,6 +145,28 @@ export default function AdminOrders() {
           </div>
         </div>
       ))}
+      </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-4 pt-8 pb-2">
+          <button 
+            disabled={page === 1} 
+            onClick={() => setPage(page - 1)}
+            className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm"
+          >
+            Previous
+          </button>
+          <span className="text-sm font-bold text-slate-600 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">Page {page} of {totalPages}</span>
+          <button 
+            disabled={page === totalPages} 
+            onClick={() => setPage(page + 1)}
+            className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

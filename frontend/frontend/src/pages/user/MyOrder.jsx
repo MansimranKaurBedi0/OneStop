@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FiBox, FiClock, FiCheckCircle, FiTruck, FiList, FiPackage } from "react-icons/fi";
+import { FiBox, FiClock, FiCheckCircle, FiTruck, FiList, FiPackage, FiShoppingBag } from "react-icons/fi";
 import SkeletonLoader from "../../components/common/SkeletonLoader";
 import EmptyState from "../../components/common/EmptyState";
 
@@ -21,16 +21,20 @@ const statusIcon = {
 export default function MyOrders() {
   const [orders, setOrders] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (pageNum = page) => {
     try {
-      const res = await axios.get("http://localhost:4000/api/orders/my", {
+      setLoading(true);
+      const res = await axios.get(`http://localhost:4000/api/orders/my?page=${pageNum}&limit=5`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      setOrders(res.data.data.reverse()); // latest first
+      setOrders(res.data.data);
+      setTotalPages(res.data.pagination.totalPages);
     } catch (err) {
       console.log(err);
     } finally {
@@ -39,10 +43,8 @@ export default function MyOrders() {
   };
 
   useEffect(() => {
-    fetchOrders();
-    const interval = setInterval(fetchOrders, 10000); // 10s is better than 5s
-    return () => clearInterval(interval);
-  }, []);
+    fetchOrders(page);
+  }, [page]);
 
   return (
     <div className="bg-slate-50 min-h-screen py-8 md:py-12">
@@ -125,6 +127,27 @@ export default function MyOrders() {
                 </div>
               </div>
             ))}
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 pt-6 pb-4">
+                <button 
+                  disabled={page === 1} 
+                  onClick={() => setPage(page - 1)}
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm"
+                >
+                  Previous
+                </button>
+                <span className="text-sm font-bold text-slate-600 bg-slate-100 px-4 py-2 rounded-lg border border-slate-200">Page {page} of {totalPages}</span>
+                <button 
+                  disabled={page === totalPages} 
+                  onClick={() => setPage(page + 1)}
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-700 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

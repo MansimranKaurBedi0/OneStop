@@ -45,11 +45,12 @@ const Navbar = () => {
                   <button 
                     onClick={() => setProfileOpen(!profileOpen)}
                     onBlur={() => setTimeout(() => setProfileOpen(false), 200)}
-                    className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors focus:outline-none"
+                    className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors focus:outline-none bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200"
                   >
-                    <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 hover:border-primary transition-colors">
-                      <FiUser size={18} />
+                    <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-sm">
+                      <FiUser size={14} />
                     </div>
+                    <span className="font-bold text-sm">Profile</span>
                   </button>
                   {profileOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg py-2 z-50 animate-fade-in origin-top-right">
