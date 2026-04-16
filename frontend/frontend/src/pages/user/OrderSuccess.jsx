@@ -1,32 +1,47 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { FiCheckCircle, FiPackage, FiShoppingBag } from "react-icons/fi";
 
 const OrderSuccess = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   return (
-    <div className="page-wrapper" style={{ background: "var(--secondary-color)", alignItems: "center", justifyContent: "center" }}>
-      <div className="card" style={{ maxWidth: "500px", width: "100%", textAlign: "center", padding: "3rem" }}>
-        <div style={{ width: "80px", height: "80px", background: "var(--success-color)", color: "white", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2.5rem", margin: "0 auto 1.5rem" }}>
-          ✓
+    <div className="min-h-[calc(100vh-64px)] bg-slate-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg border border-slate-100 p-8 text-center animate-fade-in">
+        
+        <div className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner ring-8 ring-green-50">
+          <FiCheckCircle size={48} />
         </div>
 
-        <h1 style={{ color: "var(--success-color)", marginBottom: "1rem" }}>Order Placed!</h1>
+        <h1 className="text-3xl font-bold text-slate-800 mb-2">Order Placed!</h1>
+        <p className="text-slate-500 mb-8 border-b border-slate-100 pb-6">
+          Your order has been placed successfully and is being processed by our team.
+        </p>
 
-        <div style={{ background: "var(--secondary-hover)", padding: "1rem", borderRadius: "var(--radius-md)", marginBottom: "1.5rem" }}>
-          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--text-muted)" }}>Order ID</p>
-          <h3 style={{ margin: 0, fontSize: "1.125rem" }}>{id}</h3>
+        <div className="bg-slate-50 p-4 rounded-xl mb-8 flex flex-col items-center gap-1 border border-slate-100">
+          <p className="text-sm font-medium text-slate-500 flex items-center gap-2">
+            <FiPackage /> Order ID
+          </p>
+          <h3 className="text-lg font-bold text-slate-800 tracking-wide">{id}</h3>
         </div>
 
-        <p style={{ marginBottom: "2rem", color: "var(--text-muted)" }}>Your order has been placed successfully and is being processed by our team.</p>
-
-        <button className="btn btn-primary" style={{ width: "100%", padding: "1rem" }} onClick={() => navigate("/")}>
-          Continue Shopping
-        </button>
+        <div className="flex flex-col gap-3">
+          <button 
+            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-sm active:scale-95 flex justify-center items-center gap-2" 
+            onClick={() => navigate("/")}
+          >
+            <FiShoppingBag /> Continue Shopping
+          </button>
+          <button 
+            className="w-full bg-white text-slate-700 hover:bg-slate-50 font-bold py-3.5 px-4 rounded-xl transition-all border border-slate-200 active:scale-95" 
+            onClick={() => navigate("/my-orders")}
+          >
+            View My Orders
+          </button>
+        </div>
       </div>
     </div>
   );
 };
-
 
 export default OrderSuccess;
