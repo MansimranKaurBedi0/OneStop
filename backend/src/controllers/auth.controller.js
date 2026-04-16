@@ -76,3 +76,44 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// ================= PROFILE MANAGEMENT =================
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user).select("-password -__v");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, phone, password } = req.body;
+    const user = await User.findById(req.user);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Validate phone isn't taken by someone else
+    if (phone && phone !== user.phone) {
+      const existing = await User.findOne({ phone });
+      if (existing) return res.status(400).json({ message: "Phone number already in use" });
+      user.phone = phone;
+    }
+
+    if (name) user.name = name;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+
+    res.json({ message: "Profile updated successfully", user: { name: user.name, phone: user.phone } });
+  } catch (err) {
+    console.error("UPDATE ERROR 👉", err);
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -84,6 +84,9 @@ const AdminLayout = ({ children }) => {
                 <div className="px-4 py-3 border-b border-slate-100 mb-2 sm:hidden">
                   <p className="text-sm font-bold text-slate-900">Admin User</p>
                 </div>
+                <Link to="/admin/profile" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
+                  <FiUser size={16} /> My Profile
+                </Link>
                 <button onClick={() => { setProfileOpen(false); navigate('/logout'); }} className="flex items-center w-full text-left gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
                   <FiLogOut size={16} /> Logout
                 </button>

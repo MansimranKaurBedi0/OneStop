@@ -54,7 +54,10 @@ const Navbar = () => {
                   </button>
                   {profileOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg py-2 z-50 animate-fade-in origin-top-right">
-                      <Link to="/my-orders" className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
+                      <Link to="/profile" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
+                        <FiUser size={16} /> My Profile
+                      </Link>
+                      <Link to="/my-orders" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors">
                         <FiList size={16} /> My Orders
                       </Link>
                       <button onClick={() => { setProfileOpen(false); navigate('/logout'); }} className="flex items-center gap-3 px-4 py-2.5 w-full text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
@@ -105,6 +108,9 @@ const Navbar = () => {
         <div className="px-4 pt-2 pb-6 space-y-1">
           {token ? (
             <>
+              <Link to="/profile" onClick={closeMenu} className="flex items-center gap-3 px-3 py-3.5 text-base font-medium text-slate-700 hover:text-primary hover:bg-slate-50 rounded-lg transition-colors">
+                <FiUser size={20} /> My Profile
+              </Link>
               <Link to="/my-orders" onClick={closeMenu} className="flex items-center gap-3 px-3 py-3.5 text-base font-medium text-slate-700 hover:text-primary hover:bg-slate-50 rounded-lg transition-colors">
                 <FiList size={20} /> My Orders
               </Link>
