@@ -243,8 +243,7 @@ exports.softDeleteOrder = async (req, res) => {
     if (order.status !== "DELIVERED")
       return res.status(400).json({ message: "Only delivered orders can be deleted" });
 
-    order.isDeleted = true;
-    await order.save();
+    await Order.findByIdAndUpdate(id, { isDeleted: true });
 
     res.json({ message: "Order soft deleted successfully" });
   } catch (err) {

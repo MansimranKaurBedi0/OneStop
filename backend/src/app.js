@@ -26,4 +26,6 @@ app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 
+app.delete("/api/admin/test", (req, res) => res.send("WORKS"));
+
 module.exports = app;
