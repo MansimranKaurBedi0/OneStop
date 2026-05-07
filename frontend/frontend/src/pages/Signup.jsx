@@ -77,7 +77,7 @@ const Signup = () => {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/20 rounded-full filter blur-3xl translate-y-1/2 -tralsate-x-1/2"></div>
             
             <div className="z-10 relative">
-               <img src="https://cdni.iconscout.com/illustration/premium/thumb/online-shopping-4488462-3757303.png" alt="Shopping" className="w-64 h-64 object-contain mb-8 filter drop-shadow-xl" />
+               <img src="https://ui-avatars.com/api/?name=OneStop&background=random&size=256" alt="Shopping" className="w-64 h-64 object-contain mb-8 filter drop-shadow-xl rounded-full" />
                <h3 className="text-2xl font-bold text-slate-800 mb-2">Shop with ease</h3>
                <p className="text-slate-600 max-w-xs mx-auto">Get exclusive offers, manage your orders, and enjoy a seamless ordering experience.</p>
             </div>
