@@ -23,7 +23,7 @@ const Checkout = () => {
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/cart", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/cart`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setCart(res.data);
@@ -46,7 +46,7 @@ const Checkout = () => {
     setLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/orders",
+        `${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/orders`,
         { coinsUsed: coinsToUse, paymentMethod, address },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
       );

@@ -16,7 +16,18 @@ const app = express();
 // });
 
 
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    const allowedOrigin = process.env.FRONTEND_URL;
+    if (!origin || (allowedOrigin && origin === allowedOrigin) || !allowedOrigin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Apply rate limiting to all /api routes

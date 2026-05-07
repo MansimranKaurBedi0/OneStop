@@ -25,7 +25,7 @@ const Cart = () => {
       }
       setTimeout(async () => {
         try {
-          const res = await axios.get("http://localhost:4000/api/cart", {
+          const res = await axios.get(`${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/cart`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setCart(res.data);
@@ -61,7 +61,7 @@ const Cart = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.patch(
-        `http://localhost:4000/api/cart/${productId}`,
+        `${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/cart/${productId}`,
         { quantity: newQty },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -74,7 +74,7 @@ const Cart = () => {
   const removeItem = async (productId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4000/api/cart/${productId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/cart/${productId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Item removed from cart");

@@ -28,7 +28,7 @@ const Home = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:4000/api/products");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/products`);
       // Simulate slight network delay for skeleton demo if it's too fast locally
       setTimeout(() => {
         setProducts(res.data.data);
@@ -56,7 +56,7 @@ const Home = () => {
 
     try {
       await axios.post(
-        "http://localhost:4000/api/cart/add",
+        `${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/cart/add`,
         { productId: product._id },
         {
           headers: { Authorization: `Bearer ${token}` },

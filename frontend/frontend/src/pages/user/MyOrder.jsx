@@ -27,7 +27,7 @@ export default function MyOrders() {
   const fetchOrders = async (pageNum = page) => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:4000/api/orders/my?page=${pageNum}&limit=5`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL || "https://onestop-ecef.onrender.com/api"}/orders/my?page=${pageNum}&limit=5`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
